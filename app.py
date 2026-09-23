@@ -14,27 +14,16 @@ def hello():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.json
+    print("=== WEBHOOK START ===")
 
-    print("Получено от Telegram:", data)
+    print("RAW DATA:", request.data)
 
-    if "message" in data:
-        chat_id = data["message"]["chat"]["id"]
-        text = data["message"].get("text", "")
+    data = request.get_json(silent=True)
 
-        if text == "/start":
-            answer = "Привет! Я Electronic_bot 🤖"
-        else:
-            answer = f"Ты написал: {text}"
+    print("JSON DATA:", data)
 
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
-        response = requests.post(
-            url,
-            json={
-                "chat_id": chat_id,
-                "text": answer
-            }
+    return "OK", 200
+    }
         )
 
         print("Ответ Telegram:", response.status_code, response.text)
