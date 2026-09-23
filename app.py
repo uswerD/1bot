@@ -23,7 +23,6 @@ def webhook():
     print("JSON DATA:", data)
 
     return "OK", 200
-    }
         )
 
         print("Ответ Telegram:", response.status_code, response.text)
