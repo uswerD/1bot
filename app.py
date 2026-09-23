@@ -15,34 +15,59 @@ def hello():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    print("=== WEBHOOK START ===")
-
     data = request.get_json(silent=True)
-    print("JSON DATA:", data)
 
-    if data and "message" in data:
-        chat_id = data["message"]["chat"]["id"]
-        text = data["message"].get("text", "")
+    if not data:
+        return "OK", 200
 
-        if text == "/start":
-            answer = "Привет! Я Electronic_bot 🤖"
-        else:
-            answer = f"Ты написал: {text}"
+    message = data.get("message")
 
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    if not message:
+        return "OK", 200
 
+    chat = message.get("chat")
+    if not chat:
+        return "OK", 200
+
+    chat_id = chat.get("id")
+    text = message.get("text", "")
+
+    if not chat_id:
+        return "OK", 200
+
+    if text == "/start":
+        answer = "Привет! Я Electronic_bot 🤖"
+    elif text:
+        answer = f"Ты написал: {text}"
+    else:
+        answer = "Я пока умею отвечать только на текстовые сообщения."
+
+    telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
+    try:
         response = requests.post(
-            url,
+            telegram_url,
             json={
                 "chat_id": chat_id,
                 "text": answer
-            }
+            },
+            timeout=10
         )
 
-        print("Ответ Telegram:", response.status_code, response.text)
+        print(
+            "Telegram:",
+            response.status_code,
+            response.text
+        )
+
+    except Exception as e:
+        print("Ошибка отправки в Telegram:", e)
 
     return "OK", 200
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 10000))
+    )
