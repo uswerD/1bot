@@ -14,6 +14,7 @@ def hello():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    return "WEBHOOK WORKS", 200
     print("=== WEBHOOK START ===")
 
     data = request.get_json(silent=True)
