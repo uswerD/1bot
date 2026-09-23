@@ -16,6 +16,8 @@ def hello():
 def webhook():
     data = request.json
 
+    print("Получено от Telegram:", data)
+
     if "message" in data:
         chat_id = data["message"]["chat"]["id"]
         text = data["message"].get("text", "")
@@ -27,10 +29,15 @@ def webhook():
 
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
-        requests.post(url, json={
-            "chat_id": chat_id,
-            "text": answer
-        })
+        response = requests.post(
+            url,
+            json={
+                "chat_id": chat_id,
+                "text": answer
+            }
+        )
+
+        print("Ответ Telegram:", response.status_code, response.text)
 
     return "OK"
 
