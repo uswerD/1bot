@@ -1,3 +1,4 @@
+
 from flask import Flask, request
 import os
 import requests
@@ -14,11 +15,9 @@ def hello():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    return "WEBHOOK WORKS", 200
     print("=== WEBHOOK START ===")
 
     data = request.get_json(silent=True)
-
     print("JSON DATA:", data)
 
     if data and "message" in data:
